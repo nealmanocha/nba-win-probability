@@ -2,17 +2,17 @@ import db
 import time
 from nba_api.stats.endpoints import scoreboardv2
 
-def get_live_games():
-    board = scoreboardv2.ScoreboardV2(game_date='2025-01-15')
+def get_live_games(game_date='2025-01-15'):
+    board = scoreboardv2.ScoreboardV2(game_date = game_date)
     line_score = board.get_data_frames()[1]
     game_header = board.get_data_frames()[0]
     games_df = game_header[['GAME_ID', 'GAME_DATE_EST', 'ARENA_NAME', 'GAME_STATUS_TEXT', 'HOME_TEAM_ID', 'VISITOR_TEAM_ID']]
     teams_df = line_score[['GAME_ID', 'TEAM_ABBREVIATION', 'PTS', 'FG_PCT', 'FT_PCT', 'FG3_PCT', 'AST', 'REB', 'TOV', 'TEAM_ID']]
     return games_df, teams_df
 
-def poll_games(interval_seconds=30, max_polls=5):
+def poll_games(game_date='2025-01-15', interval_seconds=30, max_polls=5):
     for i in range(max_polls):
-        games_df, teams_df = get_live_games()
+        games_df, teams_df = get_live_games(game_date)
 
         for index, row in games_df.iterrows():
             db.insert_game(row['GAME_ID'], row['GAME_DATE_EST'], row['ARENA_NAME'], row['GAME_STATUS_TEXT'], row['HOME_TEAM_ID'], row['VISITOR_TEAM_ID'])
