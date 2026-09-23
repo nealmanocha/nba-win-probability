@@ -6,6 +6,15 @@ r = redis.Redis(host='localhost', port=6379, decode_responses=True)
 
 app = FastAPI()
 
+from fastapi.middleware.cors import CORSMiddleware
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 model, feature_cols = train()
 
 @app.get("/")

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>NBA Win Probability</title>
+</head>
+<body>
+    <h1>NBA Win Probability</h1>
+
+    <label>Home FG%: <input type="number" id="fg_pct_home" value="0.48" step="0.01"></label><br>
+    <label>Away FG%: <input type="number" id="fg_pct_away" value="0.44" step="0.01"></label><br>
+    <label>Home FT%: <input type="number" id="ft_pct_home" value="0.75" step="0.01"></label><br>
+    <label>Away FT%: <input type="number" id="ft_pct_away" value="0.70" step="0.01"></label><br>
+    <label>Home 3PT%: <input type="number" id="fg3_pct_home" value="0.38" step="0.01"></label><br>
+    <label>Away 3PT%: <input type="number" id="fg3_pct_away" value="0.35" step="0.01"></label><br>
+    <label>Home AST: <input type="number" id="ast_home" value="25"></label><br>
+    <label>Away AST: <input type="number" id="ast_away" value="22"></label><br>
+    <label>Home REB: <input type="number" id="reb_home" value="45"></label><br>
+    <label>Away REB: <input type="number" id="reb_away" value="42"></label><br>
+    <label>Home TOV: <input type="number" id="tov_home" value="13"></label><br>
+    <label>Away TOV: <input type="number" id="tov_away" value="15"></label><br>
+
+    <button onclick="getPrediction()">Get Prediction</button>
+
+    <h2 id="result"></h2>
+
+    <script>
+        async function getPrediction() {
+            const params = new URLSearchParams({
+                fg_pct_home: document.getElementById('fg_pct_home').value,
+                fg_pct_away: document.getElementById('fg_pct_away').value,
+                ft_pct_home: document.getElementById('ft_pct_home').value,
+                ft_pct_away: document.getElementById('ft_pct_away').value,
+                fg3_pct_home: document.getElementById('fg3_pct_home').value,
+                fg3_pct_away: document.getElementById('fg3_pct_away').value,
+                ast_home: document.getElementById('ast_home').value,
+                ast_away: document.getElementById('ast_away').value,
+                reb_home: document.getElementById('reb_home').value,
+                reb_away: document.getElementById('reb_away').value,
+                tov_home: document.getElementById('tov_home').value,
+                tov_away: document.getElementById('tov_away').value,
+            });
+
+            const response = await fetch(`http://localhost:8000/predict?${params}`);
+            const data = await response.json();
+
+            const percent = (data.home_win_probability * 100).toFixed(1);
+            document.getElementById('result').innerText =
+                `Home win probability: ${percent}% (cached: ${data.cached})`;
+        }
+    </script>
+</body>
+</html>
