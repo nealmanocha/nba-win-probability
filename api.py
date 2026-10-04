@@ -1,8 +1,10 @@
+import os
+
 from fastapi import FastAPI
 from train_model import train
 
 import redis
-r = redis.Redis(host='localhost', port=6379, decode_responses=True)
+r = redis.Redis(host=os.getenv("REDIS_HOST", "localhost"), port=6379, decode_responses=True)
 
 app = FastAPI()
 
